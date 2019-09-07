@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Cedicoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -54,7 +54,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Cedicoin cannot be compiled without assertions."
+# error "Bitcoin cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -615,55 +615,17 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 REJECT_HIGHFEE, "absurdly-high-fee",
                 strprintf("%d > %d", nFees, nAbsurdFee));
 
-        const CTxMemPool::setEntries setIterConflicting = pool.GetIterSet(setConflicts);
         // Calculate in-mempool ancestors, up to a limit.
         CTxMemPool::setEntries setAncestors;
         size_t nLimitAncestors = gArgs.GetArg("-limitancestorcount", DEFAULT_ANCESTOR_LIMIT);
         size_t nLimitAncestorSize = gArgs.GetArg("-limitancestorsize", DEFAULT_ANCESTOR_SIZE_LIMIT)*1000;
         size_t nLimitDescendants = gArgs.GetArg("-limitdescendantcount", DEFAULT_DESCENDANT_LIMIT);
         size_t nLimitDescendantSize = gArgs.GetArg("-limitdescendantsize", DEFAULT_DESCENDANT_SIZE_LIMIT)*1000;
-
-        if (setConflicts.size() == 1) {
-            // In general, when we receive an RBF transaction with mempool conflicts, we want to know whether we
-            // would meet the chain limits after the conflicts have been removed. However, there isn't a practical
-            // way to do this short of calculating the ancestor and descendant sets with an overlay cache of
-            // changed mempool entries. Due to both implementation and runtime complexity concerns, this isn't
-            // very realistic, thus we only ensure a limited set of transactions are RBF'able despite mempool
-            // conflicts here. Importantly, we need to ensure that some transactions which were accepted using
-            // the below carve-out are able to be RBF'ed, without impacting the security the carve-out provides
-            // for off-chain contract systems (see link in the comment below).
-            //
-            // Specifically, the subset of RBF transactions which we allow despite chain limits are those which
-            // conflict directly with exactly one other transaction (but may evict children of said transaction),
-            // and which are not adding any new mempool dependencies. Note that the "no new mempool dependencies"
-            // check is accomplished later, so we don't bother doing anything about it here, but if BIP 125 is
-            // amended, we may need to move that check to here instead of removing it wholesale.
-            //
-            // Such transactions are clearly not merging any existing packages, so we are only concerned with
-            // ensuring that (a) no package is growing past the package size (not count) limits and (b) we are
-            // not allowing something to effectively use the (below) carve-out spot when it shouldn't be allowed
-            // to.
-            //
-            // To check these we first check if we meet the RBF criteria, above, and increment the descendant
-            // limits by the direct conflict and its descendants (as these are recalculated in
-            // CalculateMempoolAncestors by assuming the new transaction being added is a new descendant, with no
-            // removals, of each parent's existing dependant set). The ancestor count limits are unmodified (as
-            // the ancestor limits should be the same for both our new transaction and any conflicts).
-            // We don't bother incrementing nLimitDescendants by the full removal count as that limit never comes
-            // into force here (as we're only adding a single transaction).
-            assert(setIterConflicting.size() == 1);
-            CTxMemPool::txiter conflict = *setIterConflicting.begin();
-
-            nLimitDescendants += 1;
-            nLimitDescendantSize += conflict->GetSizeWithDescendants();
-        }
-
         std::string errString;
         if (!pool.CalculateMemPoolAncestors(entry, setAncestors, nLimitAncestors, nLimitAncestorSize, nLimitDescendants, nLimitDescendantSize, errString)) {
             setAncestors.clear();
             // If CalculateMemPoolAncestors fails second time, we want the original error string.
             std::string dummy_err_string;
-            // Contracting/payment channels CPFP carve-out:
             // If the new transaction is relatively small (up to 40k weight)
             // and has at most one ancestor (ie ancestor limit of 2, including
             // the new transaction), allow it if its parent has exactly the
@@ -673,7 +635,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
             // being able to broadcast descendants of an unconfirmed transaction
             // to be secure by simply only having two immediately-spendable
             // outputs - one for each counterparty. For more info on the uses for
-            // this, see https://lists.linuxfoundation.org/pipermail/cedicoin-dev/2018-November/016518.html
+            // this, see https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-November/016518.html
             if (nSize >  EXTRA_DESCENDANT_TX_SIZE_LIMIT ||
                     !pool.CalculateMemPoolAncestors(entry, setAncestors, 2, nLimitAncestorSize, nLimitDescendants + 1, nLimitDescendantSize + EXTRA_DESCENDANT_TX_SIZE_LIMIT, dummy_err_string)) {
                 return state.Invalid(ValidationInvalidReason::TX_MEMPOOL_POLICY, false, REJECT_NONSTANDARD, "too-long-mempool-chain", errString);
@@ -712,6 +674,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
             CFeeRate newFeeRate(nModifiedFees, nSize);
             std::set<uint256> setConflictsParents;
             const int maxDescendantsToVisit = 100;
+            const CTxMemPool::setEntries setIterConflicting = pool.GetIterSet(setConflicts);
             for (const auto& mi : setIterConflicting) {
                 // Don't allow the replacement to reduce the feerate of the
                 // mempool.
@@ -771,11 +734,6 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 // feerate junk to be mined first. Ideally we'd keep track of
                 // the ancestor feerates and make the decision based on that,
                 // but for now requiring all new inputs to be confirmed works.
-                //
-                // Note that if you relax this to make RBF a little more useful,
-                // this may break the CalculateMempoolAncestors RBF relaxation,
-                // above. See the comment above the first CalculateMempoolAncestors
-                // call for more info.
                 if (!setConflictsParents.count(tx.vin[j].prevout.hash))
                 {
                     // Rather than check the UTXO set - potentially expensive -
@@ -863,7 +821,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         // Remove conflicting transactions from the mempool
         for (CTxMemPool::txiter it : allConflicting)
         {
-            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s CEDI additional fees, %d delta bytes\n",
+            LogPrint(BCLog::MEMPOOL, "replacing tx %s with %s for %s BTC additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -1077,22 +1035,22 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
-CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
+CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
+{
     CAmount nSubsidy;
-    if (nHeight == 10 || nHeight == 50 || nHeight == 70 || nHeight == 90 || nHeight == 110 || nHeight == 130)  {
-        nSubsidy = 5000*COIN;   // premine 6x20000 coins
+    if (nHeight == 1 || nHeight == 21 || nHeight == 41 || nHeight == 61 || nHeight == 81 || nHeight == 101) {
+        nSubsidy = 1000 * COIN; 
     } else {
         if (nHeight <= 150) {
-            nSubsidy = 10 * COIN ;  // small mining to carry out the transactions
+            nSubsidy = 0.5 * COIN; 
         } else {
-            float year= (nHeight / 210240)+1; // avoid to get a negative nSubsidy
-            float halfing =  year/ 1.618033988750;
-            nSubsidy = (63 / halfing)*COIN;
+            float year = (nHeight / 152080) + 1; 
+            float halfing = year / 1.247266544310;
+            nSubsidy = (43 / halfing) * COIN;
         }
     }
-    printf("GetBlockSubsidy: height: %i - nSubsidy: %ld \n",nHeight, nSubsidy);
+    printf("GetBlockSubsidy: height: %i - nSubsidy: %ld \n", nHeight, nSubsidy);
     return nSubsidy;
-
 }
 
 CoinsViews::CoinsViews(
@@ -3446,6 +3404,7 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader>& headers, CValidatio
         }
     }
     if (NotifyHeaderTip()) {
+        LOCK(cs_main);
         if (::ChainstateActive().IsInitialBlockDownload() && ppindex && *ppindex) {
             LogPrintf("Synchronizing blockheaders, height: %d (~%.2f%%)\n", (*ppindex)->nHeight, 100.0/((*ppindex)->nHeight+(GetAdjustedTime() - (*ppindex)->GetBlockTime()) / Params().GetConsensus().nPowTargetSpacing) * (*ppindex)->nHeight);
         }
