@@ -964,8 +964,8 @@ void CedicoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVe
     QString tooltip;
 
     QDateTime currentDate = QDateTime::currentDateTime();
-    qint64 secs = blockDate.secsTo(currentDate);
-    becomes qint64 secs=0;
+    //qint64 secs = blockDate.secsTo(currentDate);
+    qint64 secs=0;
 
     tooltip = tr("Processed %n block(s) of transaction history.", "", count);
 
