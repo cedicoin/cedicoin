@@ -1,5 +1,5 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The Cedicoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -129,11 +129,11 @@ public:
         // release ASAP to avoid it where possible.
          vSeeds.emplace_back("155.138.131.117"); // Pieter Wuille, only supports x1, x5, x9, and xd
          vSeeds.emplace_back("149.28.193.134"); // Matt Corallo, only supports x9
-        // vSeeds.emplace_back("dnsseed.bitcoin.dashjr.org"); // Luke Dashjr
-        // vSeeds.emplace_back("seed.bitcoinstats.com"); // Christian Decker, supports x1 - xf
-        // vSeeds.emplace_back("seed.bitcoin.jonasschnelli.ch"); // Jonas Schnelli, only supports x1, x5, x9, and xd
+        // vSeeds.emplace_back("dnsseed.cedicoin.dashjr.org"); // Luke Dashjr
+        // vSeeds.emplace_back("seed.cedicoinstats.com"); // Christian Decker, supports x1 - xf
+        // vSeeds.emplace_back("seed.cedicoin.jonasschnelli.ch"); // Jonas Schnelli, only supports x1, x5, x9, and xd
         // vSeeds.emplace_back("seed.btc.petertodd.org"); // Peter Todd, only supports x1, x5, x9, and xd
-        // vSeeds.emplace_back("seed.bitcoin.sprovoost.nl"); // Sjors Provoost
+        // vSeeds.emplace_back("seed.cedicoin.sprovoost.nl"); // Sjors Provoost
         // vSeeds.emplace_back("dnsseed.emzy.de"); // Stephan Oeste
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,28);
@@ -209,9 +209,9 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        // vSeeds.emplace_back("testnet-seed.bitcoin.jonasschnelli.ch");
+        // vSeeds.emplace_back("testnet-seed.cedicoin.jonasschnelli.ch");
         // vSeeds.emplace_back("seed.tbtc.petertodd.org");
-        // vSeeds.emplace_back("seed.testnet.bitcoin.sprovoost.nl");
+        // vSeeds.emplace_back("seed.testnet.cedicoin.sprovoost.nl");
         // vSeeds.emplace_back("testnet-seed.bluematt.me"); // Just a static list of stable node(s), only supports x9
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);

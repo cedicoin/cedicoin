@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+#  cedicoind The cedicoin core server.
+#
+#
+# chkconfig: 345 80 20
+# description: cedicoind
+# processname: cedicoind
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/cedicoind, see below
+if [ -f /etc/sysconfig/cedicoind ]; then
+        . /etc/sysconfig/cedicoind
+fi
+
+RETVAL=0
+
+prog=cedicoind
+# you can override the lockfile via CEDICOIND_LOCKFILE in /etc/sysconfig/cedicoind
+lockfile=${CEDICOIND_LOCKFILE-/var/lock/subsys/cedicoind}
+
+# cedicoind defaults to /usr/bin/cedicoind, override with CEDICOIND_BIN
+cedicoind=${CEDICOIND_BIN-/usr/bin/cedicoind}
+
+# cedicoind opts default to -disablewallet, override with CEDICOIND_OPTS
+cedicoind_opts=${CEDICOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $cedicoind $cedicoind_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

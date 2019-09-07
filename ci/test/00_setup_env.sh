@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2019 The Bitcoin Core developers
+# Copyright (c) 2019 The Cedicoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +27,7 @@ export CCACHE_COMPRESS=${CCACHE_COMPRESS:-1}
 export CCACHE_DIR=${CCACHE_DIR:-$BASE_SCRATCH_DIR/.ccache}
 export BASE_BUILD_DIR=${BASE_BUILD_DIR:-${TRAVIS_BUILD_DIR:-$BASE_ROOT_DIR}}
 export BASE_OUTDIR=${BASE_OUTDIR:-$BASE_BUILD_DIR/out/$HOST}
-export SDK_URL=${SDK_URL:-https://bitcoincore.org/depends-sources/sdks}
+export SDK_URL=${SDK_URL:-https://cedicoincore.org/depends-sources/sdks}
 export WINEDEBUG=${WINEDEBUG:-fixme-all}
 export DOCKER_PACKAGES=${DOCKER_PACKAGES:-build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ca-certificates ccache python3}
 export GOAL=${GOAL:-install}

@@ -1,4 +1,4 @@
-*After branching off for a major version release of Bitcoin Core, use this
+*After branching off for a major version release of Cedicoin Core, use this
 template to create the initial release notes draft.*
 
 *The release notes draft is a temporary file that can be added to by anyone. See
@@ -8,53 +8,53 @@ for the process.*
 *Create the draft, named* "*version* Release Notes Draft"
 *(e.g. "0.20.0 Release Notes Draft"), as a collaborative wiki in:*
 
-https://github.com/bitcoin-core/bitcoin-devwiki/wiki/
+https://github.com/cedicoin-core/cedicoin-devwiki/wiki/
 
 *Before the final release, move the notes back to this git repository.*
 
 *version* Release Notes Draft
 ===============================
 
-Bitcoin Core version *version* is now available from:
+Cedicoin Core version *version* is now available from:
 
-  <https://bitcoincore.org/bin/bitcoin-core-*version*/>
+  <https://cedicoincore.org/bin/cedicoin-core-*version*/>
 
 This release includes new features, various bug fixes and performance
 improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/bitcoin/bitcoin/issues>
+  <https://github.com/cedicoin/cedicoin/issues>
 
 To receive security and update notifications, please subscribe to:
 
-  <https://bitcoincore.org/en/list/announcements/join/>
+  <https://cedicoincore.org/en/list/announcements/join/>
 
 How to Upgrade
 ==============
 
 If you are running an older version, shut it down. Wait until it has completely
 shut down (which might take a few minutes for older versions), then run the
-installer (on Windows) or just copy over `/Applications/Bitcoin-Qt` (on Mac)
-or `bitcoind`/`bitcoin-qt` (on Linux).
+installer (on Windows) or just copy over `/Applications/Cedicoin-Qt` (on Mac)
+or `cedicoind`/`cedicoin-qt` (on Linux).
 
-Upgrading directly from a version of Bitcoin Core that has reached its EOL is
+Upgrading directly from a version of Cedicoin Core that has reached its EOL is
 possible, but might take some time if the datadir needs to be migrated.  Old
-wallet versions of Bitcoin Core are generally supported.
+wallet versions of Cedicoin Core are generally supported.
 
 Compatibility
 ==============
 
-Bitcoin Core is supported and extensively tested on operating systems using
+Cedicoin Core is supported and extensively tested on operating systems using
 the Linux kernel, macOS 10.10+, and Windows 7 and newer. It is not recommended
-to use Bitcoin Core on unsupported systems.
+to use Cedicoin Core on unsupported systems.
 
-Bitcoin Core should also work on most other Unix-like systems but is not
+Cedicoin Core should also work on most other Unix-like systems but is not
 as frequently tested on them.
 
 From 0.17.0 onwards, macOS <10.10 is no longer supported. 0.17.0 is
 built using Qt 5.9.x, which doesn't support versions of macOS older than
-10.10. Additionally, Bitcoin Core does not yet change appearance when
+10.10. Additionally, Cedicoin Core does not yet change appearance when
 macOS "dark mode" is activated.
 
 In addition to previously-supported CPU platforms, this release's
@@ -67,8 +67,8 @@ Notable changes
 New user documentation
 ----------------------
 
-- [Reduce memory](https://github.com/bitcoin/bitcoin/blob/master/doc/reduce-memory.md)
-  suggests configuration tweaks for running Bitcoin Core on systems with
+- [Reduce memory](https://github.com/cedicoin/cedicoin/blob/master/doc/reduce-memory.md)
+  suggests configuration tweaks for running Cedicoin Core on systems with
   limited memory. (#16339)
 
 New RPCs
@@ -95,7 +95,7 @@ New settings
 
 - `-blockfilterindex` enables the creation of BIP158 block filters for
   the entire blockchain.  Filters will be created in the background and
-  currently use about 4 GiB of space.  Note: this version of Bitcoin
+  currently use about 4 GiB of space.  Note: this version of Cedicoin
   Core does not serve block filters over the P2P network, although the
   local user may obtain block filters using the `getblockfilter` RPC.
   (#14121)
@@ -107,7 +107,7 @@ Updated settings
   provide peers connecting using the indicated interfaces or IP
   addresses.  If no permissions are specified with an address or CIDR
   network, the implicit default permissions are the same as previous
-  releases.  See the `bitcoind -help` output for these two options for
+  releases.  See the `cedicoind -help` output for these two options for
   details about the available permissions. (#16248)
 
 Updated RPCs
@@ -204,7 +204,7 @@ Deprecated or removed RPCs
   configuration parameter `deprecatedrpc=totalFee` is specified.  This
   parameter will be fully removed in a subsequent release. (#15996)
 
-- `generate` is now removed after being deprecated in Bitcoin Core 0.18.
+- `generate` is now removed after being deprecated in Cedicoin Core 0.18.
   Use the `generatetoaddress` RPC instead. (#15492)
 
 P2P changes
@@ -213,12 +213,12 @@ P2P changes
 - BIP 61 reject messages were deprecated in v0.18. They are now disabled
   by default, but can be enabled by setting the `-enablebip61` command
   line option.  BIP 61 reject messages will be removed entirely in a
-  future version of Bitcoin Core. (#14054)
+  future version of Cedicoin Core. (#14054)
 
-- To eliminate well-known denial-of-service vectors in Bitcoin Core,
+- To eliminate well-known denial-of-service vectors in Cedicoin Core,
   especially for nodes with spinning disks, the default value for the
   `-peerbloomfilters` configuration option has been changed to false.
-  This prevents Bitcoin Core from sending the BIP111 NODE_BLOOM service
+  This prevents Cedicoin Core from sending the BIP111 NODE_BLOOM service
   flag, accepting BIP37 bloom filters, or serving merkle blocks or
   transactions matching a bloom filter.  Users who still want to provide
   bloom filter support may either set the configuration option to true
@@ -227,7 +227,7 @@ P2P changes
   `-whitebind` configuration options described elsewhere in these
   release notes.  For the near future, lightweight clients using public
   BIP111/BIP37 nodes should still be able to connect to older versions
-  of Bitcoin Core and nodes that have manually enabled BIP37 support,
+  of Cedicoin Core and nodes that have manually enabled BIP37 support,
   but developers of such software should consider migrating to either
   using specific BIP37 nodes or an alternative transaction filtering
   system. (#16152)
@@ -235,7 +235,7 @@ P2P changes
 Miscellaneous CLI Changes
 -------------------------
 
-- The `testnet` field in `bitcoin-cli -getinfo` has been renamed to
+- The `testnet` field in `cedicoin-cli -getinfo` has been renamed to
   `chain` and now returns the current network name as defined in BIP70
   (main, test, regtest). (#15566)
 
@@ -247,7 +247,7 @@ RPC
 
 - `getblockchaininfo` no longer returns a `bip9_softforks` object.
   Instead, information has been moved into the `softforks` object and
-  an additional `type` field describes how Bitcoin Core determines
+  an additional `type` field describes how Cedicoin Core determines
   whether that soft fork is active (e.g. BIP9 or BIP90).  See the RPC
   help for details. (#16060)
 
@@ -286,7 +286,7 @@ Network
 -------
 
 - When fetching a transaction announced by multiple peers, previous versions of
-  Bitcoin Core would sequentially attempt to download the transaction from each
+  Cedicoin Core would sequentially attempt to download the transaction from each
   announcing peer until the transaction is received, in the order that those
   peers' announcements were received.  In this release, the download logic has
   changed to randomize the fetch order across peers and to prefer sending
@@ -294,7 +294,7 @@ Network
   where inbound peers could prevent a node from getting a transaction.
   (#14897, #15834)
 
-- If a Tor hidden service is being used, Bitcoin Core will be bound to
+- If a Tor hidden service is being used, Cedicoin Core will be bound to
   the standard port 8333 even if a different port is configured for
   clearnet connections.  This prevents leaking node identity through use
   of identical non-default port numbers. (#15651)
@@ -318,7 +318,7 @@ Mempool and transaction relay
   segwit versions) are now accepted into the mempool, relayed, and
   mined.  Attempting to spend those outputs remains forbidden by policy
   ("non-standard").  When this change has been widely deployed, wallets
-  and services can accept any valid bech32 Bitcoin address without
+  and services can accept any valid bech32 Cedicoin address without
   concern that transactions paying future segwit versions will become
   stuck in an unconfirmed state. (#15846)
 
@@ -337,9 +337,9 @@ Wallet
   failing until the first block is pruned. (#15870)
 
 - When creating a transaction with a fee above `-maxtxfee` (default 0.1
-  BTC), the RPC commands `walletcreatefundedpsbt` and
+  CEDI), the RPC commands `walletcreatefundedpsbt` and
   `fundrawtransaction` will now fail instead of rounding down the fee.
-  Be aware that the `feeRate` argument is specified in BTC per 1,000
+  Be aware that the `feeRate` argument is specified in CEDI per 1,000
   vbytes, not satoshi per vbyte. (#16257)
 
 - A new wallet flag `avoid_reuse` has been added (default off). When
@@ -347,7 +347,7 @@ Wallet
   and default to not use the former in coin selection.  When setting
   this flag on an existing wallet, rescanning the blockchain is required
   to correctly mark previously used destinations.  Together with "avoid
-  partial spends" (added in Bitcoin Core v0.17.0), this can eliminate a
+  partial spends" (added in Cedicoin Core v0.17.0), this can eliminate a
   serious privacy issue where a malicious user can track spends by
   sending small payments to a previously-paid address that would then
   be included with unrelated inputs in future payments. (#13756)
@@ -373,4 +373,4 @@ Credits
 Thanks to everyone who directly contributed to this release:
 
 
-As well as everyone that helped translating on [Transifex](https://www.transifex.com/bitcoin/bitcoin/).
+As well as everyone that helped translating on [Transifex](https://www.transifex.com/cedicoin/cedicoin/).

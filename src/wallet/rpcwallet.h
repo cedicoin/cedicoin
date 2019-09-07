@@ -1,9 +1,9 @@
-// Copyright (c) 2016-2019 The Bitcoin Core developers
+// Copyright (c) 2016-2019 The Cedicoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_RPCWALLET_H
-#define BITCOIN_WALLET_RPCWALLET_H
+#ifndef CEDICOIN_WALLET_RPCWALLET_H
+#define CEDICOIN_WALLET_RPCWALLET_H
 
 #include <memory>
 #include <string>
@@ -37,4 +37,4 @@ bool EnsureWalletIsAvailable(const CWallet*, bool avoidException);
 
 UniValue getaddressinfo(const JSONRPCRequest& request);
 UniValue signrawtransactionwithwallet(const JSONRPCRequest& request);
-#endif //BITCOIN_WALLET_RPCWALLET_H
+#endif //CEDICOIN_WALLET_RPCWALLET_H
