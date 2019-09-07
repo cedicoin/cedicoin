@@ -1077,17 +1077,22 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
-CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
-{
-    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
-    // Force block reward to zero when right shift is undefined.
-    if (halvings >= 64)
-        return 0;
-
-    CAmount nSubsidy = 50 * COIN;
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
-    nSubsidy >>= halvings;
+CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
+    CAmount nSubsidy;
+    if (nHeight == 10 || nHeight == 50 || nHeight == 70 || nHeight == 90 || nHeight == 110 || nHeight == 130)  {
+        nSubsidy = 5000*COIN;   // premine 6x20000 coins
+    } else {
+        if (nHeight <= 150) {
+            nSubsidy = 10 * COIN ;  // small mining to carry out the transactions
+        } else {
+            float year= (nHeight / 210240)+1; // avoid to get a negative nSubsidy
+            float halfing =  year/ 1.618033988750;
+            nSubsidy = (63 / halfing)*COIN;
+        }
+    }
+    printf("GetBlockSubsidy: height: %i - nSubsidy: %ld \n",nHeight, nSubsidy);
     return nSubsidy;
+
 }
 
 CoinsViews::CoinsViews(
@@ -1724,10 +1729,10 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
 
     // Start enforcing BIP147 NULLDUMMY (activated simultaneously with segwit)
     if (IsWitnessEnabled(pindex->pprev, consensusparams)) {
-        flags |= SCRIPT_VERIFY_NULLDUMMY;
+       // flags |= SCRIPT_VERIFY_NULLDUMMY;
     }
 
-    return flags;
+    return true;
 }
 
 
@@ -3128,8 +3133,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
-    int height = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
-    return (height >= params.SegwitHeight);
+    // int height = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
+    // return (height >= params.SegwitHeight);
+    return true;
 }
 
 // Compute at which vout of the block's coinbase transaction the witness
@@ -3286,7 +3292,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
         CScript expect = CScript() << nHeight;
         if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
-            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cb-height", "block height mismatch in coinbase");
+            // return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cb-height", "block height mismatch in coinbase");
         }
     }
 
