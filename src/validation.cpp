@@ -1729,10 +1729,10 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
 
     // Start enforcing BIP147 NULLDUMMY (activated simultaneously with segwit)
     if (IsWitnessEnabled(pindex->pprev, consensusparams)) {
-       // flags |= SCRIPT_VERIFY_NULLDUMMY;
+        flags |= SCRIPT_VERIFY_NULLDUMMY;
     }
 
-    return true;
+    return flags;
 }
 
 
