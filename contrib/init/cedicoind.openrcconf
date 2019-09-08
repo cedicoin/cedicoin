@@ -1,0 +1,33 @@
+# /etc/conf.d/cedicoind: config file for /etc/init.d/cedicoind
+
+# Config file location
+#CEDICOIND_CONFIGFILE="/etc/cedicoin/cedicoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $CEDICOIND_USER)
+#CEDICOIND_PIDDIR="/var/run/cedicoind"
+
+# What filename to give the pidfile
+#CEDICOIND_PIDFILE="${CEDICOIND_PIDDIR}/cedicoind.pid"
+
+# Where to write cedicoind data (be mindful that the blockchain is large)
+#CEDICOIND_DATADIR="/var/lib/cedicoind"
+
+# User and group to own cedicoind process
+#CEDICOIND_USER="cedicoin"
+#CEDICOIND_GROUP="cedicoin"
+
+# Path to cedicoind executable
+#CEDICOIND_BIN="/usr/bin/cedicoind"
+
+# Nice value to run cedicoind under
+#CEDICOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#CEDICOIND_OPTS=""
+
+# The timeout in seconds OpenRC will wait for cedicoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+CEDICOIND_SIGTERM_TIMEOUT=60
